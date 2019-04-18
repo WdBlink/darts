@@ -105,8 +105,12 @@ class Network(nn.Module):
     for i, cell in enumerate(self.cells):
       if cell.reduction:
         weights = F.softmax(self.alphas_reduce, dim=-1)
+        # w_shape = self.alpha_reduce.shape
+        # weights = F.softmax(self.alpha_reduce.view(-1), dim=0).view(*w_shape)
       else:
         weights = F.softmax(self.alphas_normal, dim=-1)
+        # w_shape = self.alpha_normal.shape
+        # weights = F.softmax(self.alpha_normal.view(-1), dim=0).view(*w_shape)
       s0, s1 = s1, cell(s0, s1, weights)
     out = self.global_pooling(s1)
     logits = self.classifier(out.view(out.size(0),-1))
